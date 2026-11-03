@@ -5,14 +5,14 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
+import store from './store'
 
 // 导入全局样式
 import '@/assets/style.css'
 
 const app = createApp(App)
 
-const pinia = createPinia()
-app.use(pinia)
+app.use(store)
 
 // 注册所有Element Plus图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

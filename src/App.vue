@@ -42,7 +42,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import FrontLayout from '@/components/layout/FrontLayout.vue'
 import AdminLayout from '@/components/layout/AdminLayout.vue'
-import { ElLoading } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
