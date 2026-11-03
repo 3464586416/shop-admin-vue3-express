@@ -5,11 +5,25 @@ const db = require('../config/database');
 // 获取所有分类
 router.get('/', async (req, res) => {
     try {
+        const { name, status } = req.query;
+        const where = [];
+        const params = [];
+        if (status === undefined) {
+            where.push("status = 'active'");
+        } else if (status !== '') {
+            where.push('status = ?');
+            params.push(status);
+        }
+        if (name) {
+            where.push('name LIKE ?');
+            params.push(`%${name}%`);
+        }
+        const whereClause = where.length ? 'WHERE ' + where.join(' AND ') : '';
         const categories = await db.query(`
             SELECT * FROM categories 
-            WHERE status = 'active'
+            ${whereClause}
             ORDER BY sort_order ASC, create_time DESC
-        `);
+        `, params);
         
         res.json({
             code: 200,

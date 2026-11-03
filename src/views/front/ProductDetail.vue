@@ -497,8 +497,8 @@
       return
     }
     
-    // 这里可以跳转到订单确认页面
-    ElMessage.success('跳转到订单确认页面')
+    // 演示项目未接入支付，模拟一笔购买成功
+    ElMessage.success(`模拟购买成功：${product.value.name} ×${quantity.value}（演示项目，未接入支付）`)
   }
   
   const toggleFavorite = () => {

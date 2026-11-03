@@ -178,8 +178,10 @@
         ...searchForm
       }
       const response = await api.categories.getCategories(params)
-      categories.value = response.data.categories || []
-      pagination.total = response.data.pagination?.total || 0
+      const all = Array.isArray(response.data) ? response.data : (response.data.categories || [])
+      pagination.total = all.length
+      const start = (pagination.current - 1) * pagination.size
+      categories.value = all.slice(start, start + pagination.size)
     } catch (error) {
       console.error('加载分类失败:', error)
       ElMessage.error('加载分类失败')

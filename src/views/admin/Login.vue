@@ -202,7 +202,6 @@
       if (user.role === '超级管理员') {
         router.push('/admin/dashboard')
       } else {
-        ElMessage.warning('普通用户无法访问后台管理系统')
         router.push('/')
       }
       

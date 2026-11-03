@@ -1,7 +1,8 @@
 <template>
     <div class="profile-page">
-      <div class="header">
+      <div class="header" style="display:flex;justify-content:space-between;align-items:center">
         <h2>个人中心</h2>
+        <el-button @click="$router.push('/')">返回首页</el-button>
       </div>
   
       <el-row :gutter="20">

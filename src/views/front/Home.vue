@@ -47,6 +47,7 @@
                 <el-menu-item index="/admin/dashboard" v-if="userInfo.role === '超级管理员'">
                   后台管理
                 </el-menu-item>
+                <el-menu-item index="/admin/profile">个人中心</el-menu-item>
                 <el-menu-item @click="handleLogout">退出登录</el-menu-item>
               </el-sub-menu>
             </el-menu>
