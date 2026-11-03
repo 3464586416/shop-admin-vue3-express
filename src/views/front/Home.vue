@@ -699,6 +699,7 @@
     background: #2c3e50;
     color: #fff;
     padding: 40px 0 20px;
+    height: auto;
   }
   
   .footer-container {
