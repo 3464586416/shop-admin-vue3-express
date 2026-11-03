@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 class Database {
@@ -201,6 +202,26 @@ class Database {
                     INDEX idx_create_time (create_time)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
             `);
+
+            // 种子账号：与登录页展示的测试账号一致（bcrypt 哈希，仅演示用）
+            const seeded = await this.query(
+                "SELECT username FROM users WHERE username IN ('admin', 'user')"
+            );
+            const existing = seeded.map(r => r.username);
+            if (!existing.includes('admin')) {
+                await this.query(
+                    'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
+                    ['admin', bcrypt.hashSync('admin', 10), 'admin@example.com', '超级管理员']
+                );
+                console.log('已创建演示管理员账号 admin');
+            }
+            if (!existing.includes('user')) {
+                await this.query(
+                    'INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)',
+                    ['user', bcrypt.hashSync('user', 10), 'user@example.com', '普通用户']
+                );
+                console.log('已创建演示普通账号 user');
+            }
 
             console.log('数据库表结构检查/创建完成');
             return true;
