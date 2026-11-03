@@ -4,6 +4,13 @@
 >
 > **技术栈**：Vue 3 · Vite · Element Plus · ECharts · Vue Router 4 (history) · Vuex 4 ｜ Node · Express 5 · MySQL/TiDB (mysql2) · JWT · bcryptjs · multer · helmet · express-rate-limit ｜ 约 1.35 万行
 
+## 在线演示
+
+**https://shop-admin-b7qv.onrender.com** （Render 免费实例 + TiDB Cloud Serverless；冷启动需等约 1 分钟）
+
+- 管理员：`admin / admin`　普通用户：`user / user`
+- 演示数据均为虚构，数据库可能不定期重置
+
 ## 功能地图
 
 ```
