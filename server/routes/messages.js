@@ -221,7 +221,7 @@ router.put('/admin/:message_id/read', authenticateUser, async (req, res) => {
 });
 
 // 获取单个消息详情
-router.get('/:message_id', authenticateUser, async (req, res) => {
+router.get('/:message_id(\\d+)', authenticateUser, async (req, res) => {
     try {
         const { message_id } = req.params;
         
@@ -265,7 +265,7 @@ router.get('/:message_id', authenticateUser, async (req, res) => {
 });
 
 // 标记消息为已读
-router.put('/:message_id/read', authenticateUser, async (req, res) => {
+router.put('/:message_id(\\d+)/read', authenticateUser, async (req, res) => {
     try {
         const { message_id } = req.params;
         
@@ -340,7 +340,7 @@ router.put('/batch/read', authenticateUser, async (req, res) => {
 });
 
 // 删除消息
-router.delete('/:message_id', authenticateUser, async (req, res) => {
+router.delete('/:message_id(\\d+)', authenticateUser, async (req, res) => {
     try {
         const { message_id } = req.params;
         
