@@ -220,8 +220,17 @@ router.put('/admin/:message_id/read', authenticateUser, async (req, res) => {
     }
 });
 
+// Express 5 的 path-to-regexp 8 不再支持 ":id(\\d+)" 正则后缀（线上曾因此启动崩溃）。
+// 守卫：message_id 非纯数字时 next() 放行，让 /batch/read、/batch/delete 等字面路由继续匹配。
+function requireNumericMessageId(req, res, next) {
+    if (!/^\d+$/.test(String(req.params.message_id || ''))) {
+        return next('route');
+    }
+    next();
+}
+
 // 获取单个消息详情
-router.get('/:message_id(\\d+)', authenticateUser, async (req, res) => {
+router.get('/:message_id', requireNumericMessageId, authenticateUser, async (req, res) => {
     try {
         const { message_id } = req.params;
         
@@ -265,7 +274,7 @@ router.get('/:message_id(\\d+)', authenticateUser, async (req, res) => {
 });
 
 // 标记消息为已读
-router.put('/:message_id(\\d+)/read', authenticateUser, async (req, res) => {
+router.put('/:message_id/read', requireNumericMessageId, authenticateUser, async (req, res) => {
     try {
         const { message_id } = req.params;
         
@@ -340,7 +349,7 @@ router.put('/batch/read', authenticateUser, async (req, res) => {
 });
 
 // 删除消息
-router.delete('/:message_id(\\d+)', authenticateUser, async (req, res) => {
+router.delete('/:message_id', requireNumericMessageId, authenticateUser, async (req, res) => {
     try {
         const { message_id } = req.params;
         
