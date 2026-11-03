@@ -172,11 +172,9 @@ router.get('/my-orders', authenticateUser, async (req, res) => {
         const orders = await db.query(`
             SELECT 
                 o.*,
-                COUNT(oi.id) as item_count
+                (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) as item_count
             FROM orders o
-            LEFT JOIN order_items oi ON o.id = oi.order_id
             ${whereClause}
-            GROUP BY o.id
             ORDER BY o.create_time DESC
             LIMIT ${pageLimit} OFFSET ${offset}
         `, params);
@@ -420,12 +418,10 @@ router.get('/admin/all', authenticateUser, async (req, res) => {
                 o.*,
                 u.username as user_name,
                 u.email as user_email,
-                COUNT(oi.id) as item_count
+                (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) as item_count
             FROM orders o
             JOIN users u ON o.user_id = u.id
-            LEFT JOIN order_items oi ON o.id = oi.order_id
             ${whereClause}
-            GROUP BY o.id
             ORDER BY o.create_time DESC
             LIMIT ${pageLimit} OFFSET ${offset}
         `, params);

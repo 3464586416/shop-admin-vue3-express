@@ -365,7 +365,7 @@ router.get('/stats/summary', async (req, res) => {
             FROM categories c
             LEFT JOIN products p ON c.id = p.category_id AND p.status = 'active'
             WHERE c.status = 'active'
-            GROUP BY c.id, c.name
+            GROUP BY c.id, c.name, c.sort_order
             ORDER BY c.sort_order ASC
         `);
         
