@@ -1,7 +1,6 @@
 <template>
   <div class="front-layout">
-    <!-- 首页自带头部/底部，这里为其余前台页面补上同一套导航与页脚 -->
-    <el-header v-if="!isHome" class="main-header">
+    <el-header class="main-header">
       <div class="header-container">
         <div class="logo">
           <router-link to="/">
@@ -59,7 +58,7 @@
       <slot />
     </main>
 
-    <el-footer v-if="!isHome" class="main-footer">
+    <el-footer class="main-footer">
       <div class="footer-container">
         <div class="footer-links">
           <div class="link-column">
@@ -97,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
@@ -105,8 +104,6 @@ import api from '@/api'
 
 const route = useRoute()
 const router = useRouter()
-
-const isHome = computed(() => route.path === '/')
 
 const userInfo = ref(null)
 const cartCount = ref(0)
@@ -141,23 +138,25 @@ const getUnreadCount = async () => {
   }
 }
 
+// 已登录时不清零角标，等接口回填，避免切页数字闪烁
 const refreshUser = () => {
   const token = localStorage.getItem('token')
   const userStr = localStorage.getItem('user_info')
-  userInfo.value = null
-  cartCount.value = 0
-  unreadCount.value = 0
   if (token && userStr) {
     try {
       userInfo.value = JSON.parse(userStr)
       getCartCount()
       getUnreadCount()
+      return
     } catch (error) {
       console.error('解析用户信息失败:', error)
       localStorage.removeItem('token')
       localStorage.removeItem('user_info')
     }
   }
+  userInfo.value = null
+  cartCount.value = 0
+  unreadCount.value = 0
 }
 
 const handleLogout = () => {
@@ -170,8 +169,16 @@ const handleLogout = () => {
   router.push('/')
 }
 
-onMounted(refreshUser)
-// 布局常驻不重载，路由切换时刷新登录态与角标
+onMounted(() => {
+  refreshUser()
+  // 页面内加购/删购后不切路由也能刷新角标
+  window.addEventListener('cart-updated', getCartCount)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('cart-updated', getCartCount)
+})
+
 watch(() => route.fullPath, refreshUser)
 </script>
 
@@ -224,6 +231,15 @@ watch(() => route.fullPath, refreshUser)
 
 .header-nav {
   flex: 0 0 auto;
+}
+
+/* el-menu 默认 overflow:hidden 会把角标上沿裁掉 */
+.header-nav :deep(.el-menu--horizontal) {
+  overflow: visible;
+}
+
+.header-nav :deep(.el-badge__content) {
+  top: 6px;
 }
 
 .main-footer {

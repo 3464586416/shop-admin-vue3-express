@@ -1,59 +1,5 @@
 <template>
     <div class="home-page">
-      <!-- 顶部导航 -->
-      <el-header class="main-header">
-        <div class="header-container">
-          <div class="logo">
-            <router-link to="/">
-              <span class="logo-text">商城系统</span>
-            </router-link>
-          </div>
-          
-          <div class="header-search">
-            <el-input
-              v-model="searchKeyword"
-              placeholder="搜索商品..."
-              @keyup.enter="handleSearch"
-              class="search-input"
-            >
-              <template #append>
-                <el-button @click="handleSearch">
-                  <el-icon><Search /></el-icon>
-                </el-button>
-              </template>
-            </el-input>
-          </div>
-          
-          <div class="header-nav">
-            <el-menu mode="horizontal" :ellipsis="false" router>
-              <el-menu-item index="/">首页</el-menu-item>
-              <el-menu-item index="/category">分类</el-menu-item>
-              <el-menu-item index="/cart">
-                <el-badge :value="cartCount" :max="99">
-                  <span>购物车</span>
-                </el-badge>
-              </el-menu-item>
-              <el-menu-item index="/message">
-                <el-badge :value="unreadCount" :max="99" type="danger">
-                  <span>消息</span>
-                </el-badge>
-              </el-menu-item>
-              <el-menu-item v-if="!userInfo" index="/admin/login">登录</el-menu-item>
-              <el-sub-menu v-else index="user-menu">
-                <template #title>
-                  <el-avatar :size="30" :src="userInfo.avatar || '/images/default-avatar.jpg'" />
-                  <span style="margin-left: 8px">{{ userInfo.username }}</span>
-                </template>
-                <el-menu-item index="/admin/dashboard" v-if="userInfo.role === '超级管理员'">
-                  后台管理
-                </el-menu-item>
-                <el-menu-item index="/admin/profile">个人中心</el-menu-item>
-                <el-menu-item @click="handleLogout">退出登录</el-menu-item>
-              </el-sub-menu>
-            </el-menu>
-          </div>
-        </div>
-      </el-header>
   
       <!-- 轮播图 -->
       <div class="carousel-section">
@@ -162,40 +108,6 @@
       </div>
   
       <!-- 页脚 -->
-      <el-footer class="main-footer">
-        <div class="footer-container">
-          <div class="footer-links">
-            <div class="link-column">
-              <h4>购物指南</h4>
-              <a href="#">购物流程</a>
-              <a href="#">会员介绍</a>
-              <a href="#">常见问题</a>
-            </div>
-            <div class="link-column">
-              <h4>配送方式</h4>
-              <a href="#">配送服务</a>
-              <a href="#">配送费用</a>
-              <a href="#">配送时间</a>
-            </div>
-            <div class="link-column">
-              <h4>售后服务</h4>
-              <a href="#">退换货政策</a>
-              <a href="#">维修服务</a>
-              <a href="#">投诉建议</a>
-            </div>
-            <div class="link-column">
-              <h4>关于我们</h4>
-              <a href="#">公司简介</a>
-              <a href="#">联系我们</a>
-              <a href="#">招聘信息</a>
-            </div>
-          </div>
-          <div class="footer-bottom">
-            <p>© 2025 商城系统 版权所有</p>
-            <p>地址：XXX省XXX市XXX区XXX路XXX号</p>
-          </div>
-        </div>
-      </el-footer>
     </div>
   </template>
   
@@ -218,13 +130,8 @@
   
   const router = useRouter()
   
-  // 用户信息
+  // 用户信息（头部导航已上移到 FrontLayout）
   const userInfo = ref(null)
-  const cartCount = ref(0)
-  const unreadCount = ref(0)
-  
-  // 搜索相关
-  const searchKeyword = ref('')
   
   // 分类相关
   const hotCategories = ref([])
@@ -260,12 +167,6 @@
   }
   
   // 方法
-  const handleSearch = () => {
-    if (searchKeyword.value.trim()) {
-      router.push(`/category?search=${encodeURIComponent(searchKeyword.value.trim())}`)
-    }
-  }
-  
   const goToCategory = (categoryId) => {
     router.push(`/category?id=${categoryId}`)
   }
@@ -345,34 +246,12 @@
       await api.cart.addToCart(productId)
       ElMessage.success('已添加到购物车')
       
-      // 更新购物车数量
-      await getCartCount()
+      // 通知布局刷新购物车角标
+      window.dispatchEvent(new Event('cart-updated'))
       
     } catch (error) {
       console.error('添加到购物车失败:', error)
       ElMessage.error(error.response?.data?.message || '添加到购物车失败')
-    }
-  }
-  
-  const getCartCount = async () => {
-    try {
-      if (userInfo.value) {
-        const response = await api.cart.getCartCount()
-        cartCount.value = response.data.count || 0
-      }
-    } catch (error) {
-      console.error('获取购物车数量失败:', error)
-    }
-  }
-  
-  const getUnreadCount = async () => {
-    try {
-      if (userInfo.value) {
-        const response = await api.messages.getUnreadCount()
-        unreadCount.value = response.data.unread_count || 0
-      }
-    } catch (error) {
-      console.error('获取未读消息数量失败:', error)
     }
   }
   
@@ -392,9 +271,6 @@
     if (token && userStr) {
       try {
         userInfo.value = JSON.parse(userStr)
-        // 加载用户相关数据
-        getCartCount()
-        getUnreadCount()
       } catch (error) {
         console.error('解析用户信息失败:', error)
         localStorage.removeItem('token')
@@ -403,17 +279,7 @@
     }
   }
   
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user_info')
-    userInfo.value = null
-    cartCount.value = 0
-    unreadCount.value = 0
-    ElMessage.success('已退出登录')
-    router.push('/')
-  }
-  
-  // 生命周期
+// 生命周期
   onMounted(() => {
     loadUserInfo()
     getHotCategories()

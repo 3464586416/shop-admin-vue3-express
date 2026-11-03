@@ -478,6 +478,7 @@
   
       await api.cart.addToCart(product.value.id, quantity.value)
       ElMessage.success('已添加到购物车')
+      window.dispatchEvent(new Event('cart-updated'))
     } catch (error) {
       console.error('添加到购物车失败:', error)
       ElMessage.error(error.response?.data?.message || '添加到购物车失败')

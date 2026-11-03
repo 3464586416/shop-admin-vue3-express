@@ -327,6 +327,7 @@
       
       await api.cart.removeItem(cartItemId)
       await loadCartItems()
+      window.dispatchEvent(new Event('cart-updated'))
       
       ElMessage.success('删除成功')
     } catch (error) {
