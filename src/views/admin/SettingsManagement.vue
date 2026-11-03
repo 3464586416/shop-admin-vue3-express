@@ -1,5 +1,9 @@
 <template>
   <div class="settings-page">
+    <div class="page-head">
+      <h2>系统设置</h2>
+      <el-button @click="$router.push('/admin/dashboard')">返回仪表盘</el-button>
+    </div>
     <el-card shadow="never">
       <template #header>
         <div class="card-header">
@@ -131,6 +135,8 @@ onMounted(load)
 </script>
 
 <style scoped>
+.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.page-head h2{margin:0;font-size:22px;color:#303133}
 .settings-page {
   padding: 4px;
 }

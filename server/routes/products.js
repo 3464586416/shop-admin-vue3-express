@@ -148,8 +148,10 @@ router.get('/', async (req, res) => {
         let whereConditions = [];
         let queryParams = [];
         
-        whereConditions.push('p.status = ?');
-        queryParams.push(status);
+        if (status) {
+            whereConditions.push('p.status = ?');
+            queryParams.push(status);
+        }
         
         if (category_id) {
             whereConditions.push('p.category_id = ?');

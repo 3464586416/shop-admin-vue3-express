@@ -49,7 +49,7 @@ router.post('/create', authenticateUser, async (req, res) => {
         await connection.beginTransaction();
         
         // 获取购物车商品
-        const cartItems = await connection.query(`
+        const [cartItems] = await connection.query(`
             SELECT 
                 ci.*,
                 p.name as product_name,
@@ -97,7 +97,7 @@ router.post('/create', authenticateUser, async (req, res) => {
         const orderNumber = generateOrderNumber();
         
         // 创建订单
-        const orderResult = await connection.query(`
+        const [orderResult] = await connection.query(`
             INSERT INTO orders (order_number, user_id, total_price, status)
             VALUES (?, ?, ?, 'pending')
         `, [orderNumber, req.userId, totalPrice]);
@@ -276,7 +276,7 @@ router.put('/:order_id/cancel', authenticateUser, async (req, res) => {
         const { order_id } = req.params;
         
         // 检查订单是否存在且属于当前用户
-        const orders = await connection.query(`
+        const [orders] = await connection.query(`
             SELECT id, status 
             FROM orders 
             WHERE id = ? AND user_id = ?
@@ -309,7 +309,7 @@ router.put('/:order_id/cancel', authenticateUser, async (req, res) => {
         `, [order_id]);
         
         // 恢复商品库存
-        const orderItems = await connection.query(`
+        const [orderItems] = await connection.query(`
             SELECT product_id, quantity 
             FROM order_items 
             WHERE order_id = ?

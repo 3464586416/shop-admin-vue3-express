@@ -482,7 +482,7 @@ router.delete('/admin/:user_id', authenticateUser, async (req, res) => {
         }
         
         // 检查用户是否存在
-        const existingUser = await connection.query(
+        const [existingUser] = await connection.query(
             'SELECT id, username FROM users WHERE id = ?',
             [user_id]
         );
@@ -499,7 +499,7 @@ router.delete('/admin/:user_id', authenticateUser, async (req, res) => {
         
         try {
             // 删除用户的订单项
-            const userOrders = await connection.query(
+            const [userOrders] = await connection.query(
                 'SELECT id FROM orders WHERE user_id = ?',
                 [user_id]
             );

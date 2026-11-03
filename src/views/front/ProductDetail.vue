@@ -99,7 +99,7 @@
                   <el-input-number
                     v-model="quantity"
                     :min="1"
-                    :max="product.stock"
+                    :max="product.stock > 0 ? product.stock : 1"
                     :disabled="product.stock === 0"
                     size="large"
                     controls-position="right"
@@ -296,7 +296,7 @@
   </template>
   
   <script setup>
-  import { ref, reactive, onMounted, computed } from 'vue'
+  import { ref, reactive, onMounted, computed, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { ElMessage } from 'element-plus'
   import {
@@ -514,6 +514,16 @@
   onMounted(() => {
     loadProduct()
     loadRecommendedProducts()
+  })
+  
+  // 停留在详情页时点"猜你喜欢"换商品：params 变化需重新加载
+  watch(() => route.params.id, (id, old) => {
+    if (id && id !== old) {
+      quantity.value = 1
+      loadProduct()
+      loadRecommendedProducts()
+      window.scrollTo({ top: 0 })
+    }
   })
   </script>
   

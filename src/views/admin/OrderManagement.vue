@@ -1,5 +1,9 @@
 <template>
   <div class="order-management">
+    <div class="page-head">
+      <h2>订单管理</h2>
+      <el-button @click="$router.push('/admin/dashboard')">返回仪表盘</el-button>
+    </div>
     <el-card shadow="never">
       <div class="filter-bar">
         <el-select v-model="filters.status" placeholder="全部状态" clearable style="width: 140px" @change="reload">
@@ -190,6 +194,8 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.page-head h2{margin:0;font-size:22px;color:#303133}
 .filter-bar {
   display: flex;
   align-items: center;

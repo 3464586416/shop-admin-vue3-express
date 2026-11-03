@@ -57,7 +57,7 @@ service.interceptors.response.use(
     
     // 如果响应中有code字段，根据code处理
     if (res.code !== undefined) {
-      if (res.code === 200) {
+      if (res.code >= 200 && res.code < 300) {
         return res
       } else {
         // 处理业务错误
