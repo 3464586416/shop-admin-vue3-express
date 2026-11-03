@@ -163,7 +163,6 @@
                     <template #default="{ row }">
                       <el-avatar
                         :size="40"
-                        :src="getTypeIcon(row.type)"
                         :style="{ backgroundColor: getTypeColor(row.type) }"
                       >
                         <el-icon v-if="!row.icon">

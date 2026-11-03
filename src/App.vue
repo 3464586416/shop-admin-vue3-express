@@ -3,22 +3,14 @@
     <!-- 前台布局 -->
     <template v-if="!isAdminRoute">
       <front-layout>
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
+        <router-view />
       </front-layout>
     </template>
     
     <!-- 后台管理布局 -->
     <template v-else>
       <admin-layout v-if="isAuthenticated">
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
+        <router-view />
       </admin-layout>
       <router-view v-else />
     </template>
