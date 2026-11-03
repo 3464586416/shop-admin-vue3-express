@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET; // server.js 启动时已强制校验该环境变量存在
 
 // 验证用户中间件
 const authenticateUser = (req, res, next) => {
@@ -19,6 +19,7 @@ const authenticateUser = (req, res, next) => {
         
         const decoded = jwt.verify(token, JWT_SECRET);
         req.userId = decoded.id;
+        req.userRole = decoded.role;
         next();
         
     } catch (error) {
