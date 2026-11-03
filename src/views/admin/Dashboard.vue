@@ -32,9 +32,6 @@
             <el-menu-item index="/admin/products">
               商品管理
             </el-menu-item>
-            <el-menu-item index="/admin/banners">
-              轮播图管理
-            </el-menu-item>
           </el-sub-menu>
           
           <el-sub-menu index="order">
@@ -120,6 +117,10 @@
           </div>
           
           <div class="topbar-right">
+            <el-button class="back-home-btn" @click="router.push('/')">
+              <el-icon><HomeFilled /></el-icon>
+              <span class="back-home-text">返回前台</span>
+            </el-button>
             <div class="user-info">
               <el-dropdown @command="handleUserCommand">
                 <div class="user-dropdown">
@@ -924,31 +925,39 @@
     flex: 1;
     border-right: none;
     background: transparent;
-    color: rgba(255,255,255,0.8);
+    --el-menu-bg-color: transparent;
+    --el-menu-text-color: rgba(255,255,255,0.8);
+    --el-menu-hover-bg-color: rgba(255,255,255,0.1);
+    --el-menu-hover-text-color: #fff;
+    --el-menu-active-color: #fff;
   }
   
   .admin-menu:not(.el-menu--collapse) {
     width: 256px;
   }
   
-  .admin-menu .el-menu-item,
-  .admin-menu .el-sub-menu__title {
+  .admin-menu :deep(.el-sub-menu .el-menu) {
+    background: #001529;
+  }
+  
+  .admin-menu :deep(.el-menu-item),
+  .admin-menu :deep(.el-sub-menu__title) {
     color: rgba(255,255,255,0.8);
   }
   
-  .admin-menu .el-menu-item:hover,
-  .admin-menu .el-sub-menu__title:hover {
+  .admin-menu :deep(.el-menu-item:hover),
+  .admin-menu :deep(.el-sub-menu__title:hover) {
     background: rgba(255,255,255,0.1);
     color: #fff;
   }
   
-  .admin-menu .el-menu-item.is-active {
+  .admin-menu :deep(.el-menu-item.is-active) {
     background: #1890ff !important;
     color: #fff !important;
   }
   
-  .admin-menu .el-icon {
-    color: inherit;
+  .admin-menu :deep(.el-sub-menu.is-active > .el-sub-menu__title) {
+    color: #fff;
   }
   
   .sidebar-footer {

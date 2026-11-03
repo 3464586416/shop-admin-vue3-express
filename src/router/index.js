@@ -13,6 +13,9 @@ import Login from '@/views/admin/Login.vue'
 import Dashboard from '@/views/admin/Dashboard.vue'
 import CategoryManagement from '@/views/admin/CategoryManagement.vue'
 import ProductManagement from '@/views/admin/ProductManagement.vue'
+import OrderManagement from '@/views/admin/OrderManagement.vue'
+import UserManagement from '@/views/admin/UserManagement.vue'
+import MessageManagement from '@/views/admin/MessageManagement.vue'
 import Profile from '@/views/admin/Profile.vue'
 
 // 路由守卫：检查用户是否登录和权限
@@ -156,6 +159,80 @@ const routes = [
       requiresAuth: true,
       requiresAdmin: true,
       keepAlive: true
+    }
+  },
+  {
+    path: '/admin/orders',
+    name: 'OrderManagement',
+    component: OrderManagement,
+    meta: {
+      title: '订单管理 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/orders/pending',
+    name: 'OrderManagementPending',
+    component: OrderManagement,
+    meta: {
+      title: '待处理订单 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true,
+      presetStatus: 'pending'
+    }
+  },
+  {
+    path: '/admin/orders/completed',
+    name: 'OrderManagementCompleted',
+    component: OrderManagement,
+    meta: {
+      title: '已完成订单 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true,
+      presetStatus: 'completed'
+    }
+  },
+  {
+    path: '/admin/users',
+    name: 'UserManagement',
+    component: UserManagement,
+    meta: {
+      title: '用户管理 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/users/admins',
+    name: 'UserManagementAdmins',
+    component: UserManagement,
+    meta: {
+      title: '管理员列表 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true,
+      presetRole: '超级管理员'
+    }
+  },
+  {
+    path: '/admin/messages',
+    name: 'MessageManagement',
+    component: MessageManagement,
+    meta: {
+      title: '消息管理 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
+    path: '/admin/messages/send',
+    name: 'MessageManagementSend',
+    component: MessageManagement,
+    meta: {
+      title: '发送消息 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true,
+      autoSend: true
     }
   },
   {

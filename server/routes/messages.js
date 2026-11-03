@@ -111,6 +111,115 @@ router.get('/', authenticateUser, async (req, res) => {
     }
 });
 
+// 管理员获取全部消息
+router.get('/admin/all', authenticateUser, async (req, res) => {
+    try {
+        if (req.userRole !== '超级管理员') {
+            return res.status(403).json({
+                code: 403,
+                message: '权限不足'
+            });
+        }
+        
+        const {
+            page = 1,
+            limit = 10,
+            is_read,
+            search
+        } = req.query;
+        
+        const offset = (parseInt(page) - 1) * parseInt(limit);
+        const pageLimit = parseInt(limit);
+        
+        let whereClause = 'WHERE 1=1';
+        const params = [];
+        
+        if (is_read !== undefined) {
+            whereClause += ' AND m.is_read = ?';
+            params.push(is_read === 'true' ? 1 : 0);
+        }
+        
+        if (search) {
+            whereClause += ' AND (m.title LIKE ? OR m.content LIKE ? OR u.username LIKE ?)';
+            params.push(`%${search}%`, `%${search}%`, `%${search}%`);
+        }
+        
+        const messages = await db.query(`
+            SELECT m.*, u.username as user_name
+            FROM messages m
+            JOIN users u ON m.user_id = u.id
+            ${whereClause}
+            ORDER BY m.create_time DESC
+            LIMIT ${pageLimit} OFFSET ${offset}
+        `, params);
+        
+        const totalResult = await db.query(`
+            SELECT COUNT(*) as total
+            FROM messages m
+            JOIN users u ON m.user_id = u.id
+            ${whereClause}
+        `, params);
+        
+        const total = totalResult[0].total;
+        
+        res.json({
+            code: 200,
+            data: {
+                messages,
+                pagination: {
+                    page: parseInt(page),
+                    limit: pageLimit,
+                    total,
+                    pages: Math.ceil(total / pageLimit)
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error('管理员获取消息列表错误:', error);
+        res.status(500).json({
+            code: 500,
+            message: '服务器内部错误'
+        });
+    }
+});
+
+// 管理员标记任意消息为已读
+router.put('/admin/:message_id/read', authenticateUser, async (req, res) => {
+    try {
+        if (req.userRole !== '超级管理员') {
+            return res.status(403).json({
+                code: 403,
+                message: '权限不足'
+            });
+        }
+        
+        const result = await db.query(
+            'UPDATE messages SET is_read = 1 WHERE id = ?',
+            [req.params.message_id]
+        );
+        
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                code: 404,
+                message: '消息不存在'
+            });
+        }
+        
+        res.json({
+            code: 200,
+            message: '已标记为已读'
+        });
+        
+    } catch (error) {
+        console.error('管理员标记消息已读错误:', error);
+        res.status(500).json({
+            code: 500,
+            message: '服务器内部错误'
+        });
+    }
+});
+
 // 获取单个消息详情
 router.get('/:message_id', authenticateUser, async (req, res) => {
     try {

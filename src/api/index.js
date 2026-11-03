@@ -230,6 +230,16 @@ export const messages = {
     return request.post('/api/messages/send', data)
   },
   
+  // 管理员获取全部消息
+  getAdminMessages: (params = {}) => {
+    return request.get('/api/messages/admin/all', { params })
+  },
+  
+  // 管理员标记消息已读
+  markAdminMessageRead: (messageId) => {
+    return request.put(`/api/messages/admin/${messageId}/read`)
+  },
+  
   // 获取未读消息数量
   getUnreadCount: () => {
     return request.get('/api/messages/unread/count')

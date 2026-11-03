@@ -215,17 +215,23 @@ router.get('/:order_id', authenticateUser, async (req, res) => {
     try {
         const { order_id } = req.params;
         
-        // 查询订单基本信息
-        const orders = await db.query(`
-            SELECT o.*
-            FROM orders o
-            WHERE o.id = ? AND o.user_id = ?
-        `, [order_id, req.userId]);
+        // 查询订单基本信息（管理员可查任意订单，普通用户仅限本人）
+        const orders = await db.query(
+            'SELECT o.* FROM orders o WHERE o.id = ?',
+            [order_id]
+        );
         
         if (orders.length === 0) {
             return res.status(404).json({
                 code: 404,
                 message: '订单不存在'
+            });
+        }
+        
+        if (req.userRole !== '超级管理员' && orders[0].user_id !== req.userId) {
+            return res.status(403).json({
+                code: 403,
+                message: '无权查看该订单'
             });
         }
         
