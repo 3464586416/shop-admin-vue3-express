@@ -236,6 +236,16 @@ const routes = [
     }
   },
   {
+    path: '/admin/settings',
+    name: 'AdminSettings',
+    component: () => import('../views/admin/SettingsManagement.vue'),
+    meta: {
+      title: '系统设置 - 后台管理',
+      requiresAuth: true,
+      requiresAdmin: true
+    }
+  },
+  {
     path: '/admin/profile',
     name: 'Profile',
     component: Profile,

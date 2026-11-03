@@ -542,7 +542,7 @@
   
   /* 侧边栏样式 */
   .sidebar {
-    flex: 0 0 250px;
+    flex: 0 0 200px;
   }
   
   .category-sidebar, .filter-sidebar {
@@ -647,6 +647,17 @@
     width: 100%;
     height: 100%;
     transition: transform 0.5s ease;
+  }
+
+  .product-image :deep(.el-image__inner) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .product-card :deep(.el-card__body) {
+    padding: 12px;
   }
   
   .product-card:hover .product-image .el-image {

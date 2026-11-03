@@ -800,7 +800,7 @@
         orient: 'vertical',
         right: 10,
         top: 'center',
-        data: categoryChart.data.map(item => item.category_name)
+        data: categoryChart.data.map(item => item.name)
       },
       series: [
         {
@@ -829,7 +829,7 @@
           },
           data: categoryChart.data.map(item => ({
             value: item.product_count,
-            name: item.category_name
+            name: item.name
           }))
         }
       ]

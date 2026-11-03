@@ -381,6 +381,23 @@ export const files = {
 }
 
 // 导出所有API
+const settings = {
+  // 读取全部设置
+  getSettings: () => {
+    return request.get('/api/settings')
+  },
+
+  // 保存某一组设置
+  updateSettings: (group, data) => {
+    return request.put(`/api/settings/${group}`, data)
+  },
+
+  // 恢复默认
+  resetSettings: () => {
+    return request.post('/api/settings/reset')
+  }
+}
+
 export default {
   auth,
   products,
@@ -390,5 +407,6 @@ export default {
   messages,
   users,
   admin,
-  files
+  files,
+  settings
 }
